@@ -1,0 +1,21 @@
+version: '3.9'
+
+services:
+  chromadb:
+    image: chromadb/chroma:latest
+    volumes:
+      - ./assets/chromadb:/chroma/chroma
+    environment:
+      IS_PERSISTENT: "TRUE"
+      PERSIST_DIRECTORY: "/chroma/chroma"
+      ANONYMIZED_TELEMETRY: "${ANONYMIZED_TELEMETRY:-TRUE}"
+    ports:
+      - 8000:8000
+    networks:
+      devnet:
+        ipv4_address: 172.10.0.10  # Modificado para uma sub-rede mais comum
+
+networks:
+  devnet:
+    driver: bridge
+    external: true
