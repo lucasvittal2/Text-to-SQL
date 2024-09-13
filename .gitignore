@@ -2,3 +2,4 @@
 *pyc
 .env
 asset/chromadb
+src/test.py
