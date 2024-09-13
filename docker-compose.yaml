@@ -2,6 +2,7 @@ version: '3.9'
 
 services:
   chromadb:
+    container_name: chromadb
     image: chromadb/chroma:latest
     volumes:
       - ./assets/chromadb:/chroma/chroma
@@ -14,6 +15,15 @@ services:
     networks:
       devnet:
         ipv4_address: 172.10.0.10  # Modificado para uma sub-rede mais comum
+    
+  mongodb:
+    image: mongo
+    restart: always
+    container_name: mongodb
+    ports:
+      - '27017:27017'
+    volumes:
+      - ./assets/mongodb/:/data/db
 
 networks:
   devnet:
