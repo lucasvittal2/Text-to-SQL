@@ -1,9 +1,10 @@
-from pymongo import MongoClient, UpdateOne
+from typing import List
+from pymongo import MongoClient
 from pymongo.errors import CollectionInvalid
 import os
 import logging
 
-class MongoHandler:
+class MongoDBHandler:
     
     def __init__(self):
         
@@ -13,7 +14,7 @@ class MongoHandler:
         PASSWORD=os.getenv("MONGO_PASSWORD")
         uri = base_uri.replace("<USERNAME>", USERNAME).replace("<PASSWORD>", PASSWORD)
         
-        client = MongoClient(uri)
+        self.client = MongoClient(uri)
         self.database = self.client[database_name]
 
     def createCollection(self, collection_name: str):
@@ -46,7 +47,7 @@ class MongoHandler:
             result = collection.update_one(query, {'$set': update_data}, upsert=True)
             logging.info("Upserting operation on MongoDB has ben done successfully. ")
             
-        except Execption as err:
+        except Exception as err:
             
             logging.error(f"Upserting operation has failed on MongoDB due to the followin error: \n\n{err}\n\n")
             raise err
@@ -77,7 +78,7 @@ class MongoHandler:
             raise err  
             
 
-    def insertDocuments(self, collection_name: str, documents: list):
+    def insertDocuments(self, collection_name: str, documents: List[dict]):
         
         try:
             collection = self.database[collection_name]
@@ -92,8 +93,9 @@ class MongoHandler:
     def getCollectionData(self, collection_name: str) -> List[dict]:
         try:
             collection = self.database[collection_name]
-            data = list(collection.find({}))
+            data = list(collection.find())
             logging.info(f"Got {len(data)} documents from collection '{collection_name}' fromMongoDB.")
+            return data
             
         except Exception as err:
             
