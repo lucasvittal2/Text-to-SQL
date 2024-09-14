@@ -1,8 +1,8 @@
 from typing import List
 from openai import OpenAI
+from services.config.config import Config
 import logging
 import os
-import time
 
 
 class EmbeddingGenerator:
@@ -10,6 +10,7 @@ class EmbeddingGenerator:
     def __init__(self, embedding_model:str, api_key: str) -> None:
         self.embedding_model = embedding_model
         self.api_key = api_key
+        self.parms = Config().getConfig()
         
     def getEmbedding(text:str) -> List[float]:
         raise NotImplemented("Method 'getEmbedding' were not implemented by 'EmbeddingGenerator' child")
@@ -17,8 +18,9 @@ class EmbeddingGenerator:
 class OpenAIEmbeddingGenerator(EmbeddingGenerator):
     
     def __init__(self) -> None:
-        embedding_model = os.getenv("OPENAI_EMBEDDING_MODEL")
-        api_key=os.environ.get('OPENAI_API_KEY')
+
+        embedding_model = self.parms["OPENAI_EMBEDDING_MODEL"]
+        api_key=self.parms["OPENAI_KEY"]
         super().__init__(  embedding_model, api_key )
         self.client = OpenAI(api_key= self.api_key)
         
