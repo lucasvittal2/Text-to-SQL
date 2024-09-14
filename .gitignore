@@ -1,6 +1,8 @@
 .venv
 *pyc
 .env
-./asset/chromadb
-./assets/mongodb
+
+assets/mongodb/
+assets/chromadb/
+assets/logs/
 src/test.py
