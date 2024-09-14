@@ -8,12 +8,8 @@ class MongoDBHandler:
     
     def __init__(self):
         
-        base_uri = os.getenv("MONGO_URI")
+        uri = os.getenv("MONGO_URI")
         database_name = os.getenv("APP_DATABASE")
-        USERNAME=os.getenv("MONGO_USERNAME")
-        PASSWORD=os.getenv("MONGO_PASSWORD")
-        uri = base_uri.replace("<USERNAME>", USERNAME).replace("<PASSWORD>", PASSWORD)
-        
         self.client = MongoClient(uri)
         self.database = self.client[database_name]
 
