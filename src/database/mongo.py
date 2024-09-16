@@ -90,7 +90,7 @@ class MongoDBHandler:
         try:
             collection = self.database[collection_name]
             data = list(collection.find())
-            logging.info(f"Got {len(data)} documents from collection '{collection_name}' fromMongoDB.")
+            logging.info(f"Got {len(data)} documents from collection '{collection_name}' from MongoDB.")
             return data
             
         except Exception as err:
