@@ -1,17 +1,8 @@
 import psycopg2
-from contextlib import contextmanager
-from dataclasses import dataclass
 import pandas as pd
 import logging
+from domain.model import PostgresConnection
 
-@dataclass
-class PostgresConnection:
-    
-    host:str
-    database: str
-    user: str
-    password: str
-    port: str
 
 class PostgredDBHandler:
    
