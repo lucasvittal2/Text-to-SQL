@@ -4,8 +4,6 @@ import logging
 
 class TextGenerator:
     
-        
-
     def generateText(prompt: str) -> str:
         raise NotImplemented("Method 'generateText' were not implemented !")
     
@@ -27,6 +25,7 @@ class OpenAITextGenerator(TextGenerator):
                 temperature=self.LLM_TEMPERATURE,
             )
             generated_text = response.choices[0].message.content
+            logging.info(f"Text generated succefully using OpenAI LLM {self.LLM_MODEL} model.")
             return generated_text
         except Exception as err:
             logging.error(f"Error in generating text with OpenAI {self.llm_model} model due to the following error: \n\n{err}\n\n")
