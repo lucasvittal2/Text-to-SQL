@@ -1,6 +1,8 @@
 from typing import List
 from services.llm.embeding import EmbeddingGenerator
+from services.llm.generation import TextGenerator
 from services.config.config import Config
+from client.dbclient import DBClient
 from database.postgres import PostgredDBHandler
 from database.chroma import ChromaDBHandler, ChromaCollectionData
 import logging
@@ -9,11 +11,15 @@ import json
 
 class ApplicationCore:
 
-    def __init__(self) -> None:
-        self.config = Config()
-        self.postgres = PostgredDBHandler()
+    def __init__(self, text_generator: TextGenerator) -> None:
+
+        self.__getParams()
+        connection = self.db_client.getConnection(self.CONNECTION_KEY)
+        self.postgres = PostgredDBHandler(connection)
         self.chroma = ChromaDBHandler()
-        self.embedding_generator = EmbeddingGenerator()      
+        self.embedding_generator = EmbeddingGenerator()
+        self.db_client = DBClient()
+        self.text_generation = text_generator    
 
     def updateEmbeddings(self) -> None:
         
@@ -59,8 +65,10 @@ class ApplicationCore:
                 most_sims_columns = self.chroma.getMostSimilars("columns", n_results=self.MAX_COLUMN_METADATA_RECORDS, filter= cols_filter)
                 most_sims_tables = [json.dumps(metadata) for metadata in most_sims_tables]
                 prompt = self.__buildPrompt(question, most_sims_tables, most_sims_columns)
-                #generate text
-                #validate text with running query
+                
+                sql_query = self.text_generation.generateText(prompt)
+                self.postgres.RunQuery(sql_query)
+            
                 logging.info("SQL query generated and validated sucessfully !")
 
             except Exception as err:
@@ -72,14 +80,17 @@ class ApplicationCore:
         raise Exception("SQL query generationg has failed, it was not possible to generate a valid SQL query")
     
     def __getParams(self) -> None:
-        params = self.config.getConfig()
+
+        config = Config()
+        params = config.getConfig()
         self.MAX_ATTEMPTS: int = params["MAX_ATTEMPTS"]
         self.MAX_TABLE_METADATA_RECORDS: int = params["MAX_TABLE_METADATA_RECORDS"]
         self.MAX_COLUMN_METADATA_RECORDS: int = params["MAX_COLUMN_METADATA_RECORDS"]
         self.BASE_PROMPT: str = params["BASE_PROMPT"]
+        self.CONNECTION_KEY = params["CONNECTION_KEY"]
 
     def __buildPrompt(self, question: str,column_metadata: List[str]) -> str:
-        
+
         self.__getParams()
         str_column_metadata = "\n".join(column_metadata)
         prompt = self.BASE_PROMPT\
