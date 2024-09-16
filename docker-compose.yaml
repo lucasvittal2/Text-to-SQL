@@ -24,6 +24,23 @@ services:
       - '27017:27017'
     volumes:
       - ./assets/mongodb/:/data/db
+  
+  text-to-sql:
+    build: .
+    container_name: text_to_sql_api
+    ports:
+      - "8090:8090" 
+    restart: always 
+    environment:
+      - PYTHONUNBUFFERED=1
+      - CHROMADB_HOST="localhost"
+      - CHROMADB_PORT="8000"
+      - APP_NAME="TEXT-TO-SQL"
+      - APP_DATABASE="text-to-sql"
+      - MONGO_URI="mongodb://localhost:27017"
+      - MONGO_USERNAME="root"
+      - MONGO_PASSWORD="example"
+      - OPENAI_EMBEDDING_MODEL="text-embedding-3-small"
 
 networks:
   devnet:
