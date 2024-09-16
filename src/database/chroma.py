@@ -1,10 +1,11 @@
 import chromadb
-from chromadb.config import DEFAULT_TENANT, DEFAULT_DATABASE, Settings
+from services.config.config import Config
 from chromadb.utils.embedding_functions import OpenAIEmbeddingFunction
+from dataclasses import dataclass
 from typing import List
 import os
 import logging
-from dataclasses import dataclass
+
 
 @dataclass
 class ChromaCollectionData:
@@ -15,7 +16,7 @@ class ChromaCollectionData:
 class ChromaDBHandler:
     
     def __init__(self):
-        print(os.getenv("CHROMADB_HOST"))
+        self.config = Config()
         self.client = chromadb.HttpClient(
             host=os.getenv("CHROMADB_HOST"),
             port=os.getenv("CHROMADB_PORT")
@@ -60,5 +61,6 @@ class ChromaDBHandler:
             raise err
     
     def __getParams(self)->None:
-        self.embedding_function = OpenAIEmbeddingFunction(api_key=os.environ.get('OPENAI_API_KEY'), model_name='text-embedding-3-small')
+        params = self.config.getConfig()
+        self.embedding_function = OpenAIEmbeddingFunction(api_key=params['OPENAI_API_KEY'], model_name=params["OPENAI_EMBEDDING_MODEL"])
    
