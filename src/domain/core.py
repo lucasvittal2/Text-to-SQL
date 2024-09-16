@@ -14,11 +14,11 @@ class ApplicationCore:
     def __init__(self, text_generator: TextGenerator) -> None:
 
         self.__getParams()
-        connection = self.db_client.getConnection(self.CONNECTION_KEY)
-        self.postgres = PostgredDBHandler(connection)
         self.chroma = ChromaDBHandler()
         self.embedding_generator = EmbeddingGenerator()
         self.db_client = DBClient()
+        connection = self.db_client.getConnection(self.CONNECTION_KEY)
+        self.postgres = PostgredDBHandler(connection)
         self.text_generation = text_generator    
 
     def updateEmbeddings(self) -> None:
