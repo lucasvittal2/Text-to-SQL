@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from typing import List
 import os
 import logging
+import json
 
 
 @dataclass
@@ -49,11 +50,15 @@ class ChromaDBHandler:
             logging.error(f"Collection creating on ChromaDB has failed due the folloing error: \n\n{err}\n\n")
             raise err
         
-    def getMostSimilars(self, collection_name:str, question: str, filter: List[dict] =None, n_results=10 )-> List[dict]:
+    def getMostSimilars(self, collection_name:str, question: str, filter: List[dict] =None, n_results=10, to_dict=False )-> List[dict] | List[str]:
         try:
             self.__getParams()
             collection = self.client.get_collection(collection_name, embedding_function=self.embedding_function)
             most_sims = collection.query(query_texts= question, where_document=filter, n_results=n_results)
+
+            if to_dict:
+                most_sims = [json.loads(metadata) for metadata in most_sims]
+                
             logging.info(f"Got {len(most_sims)} records from '{collection_name}'")
             return  most_sims
         except Exception as err:
