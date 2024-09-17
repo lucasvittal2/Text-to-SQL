@@ -47,7 +47,7 @@ class ChromaDBHandler:
             )
             logging.info(f"Collection '{name}' were created successfully !")
         except Exception as err:
-            logging.error(f"Collection creating on ChromaDB has failed due the folloing error: \n\n{err}\n\n")
+            logging.error(f"Collection creating on ChromaDB has failed due the following error: \n\n{err}\n\n")
             raise err
         
     def getMostSimilars(self, collection_name:str, question: str, filter: List[dict] =None, n_results=10, to_dict=False )-> List[dict] | List[str]:
@@ -55,9 +55,10 @@ class ChromaDBHandler:
             self.__getParams()
             collection = self.client.get_collection(collection_name, embedding_function=self.embedding_function)
             most_sims = collection.query(query_texts= question, where_document=filter, n_results=n_results)
-
+            metadata_records = most_sims["documents"][0]
+            
             if to_dict:
-                most_sims = [json.loads(metadata) for metadata in most_sims]
+                most_sims = [json.loads(metadata) for metadata in metadata_records]
                 
             logging.info(f"Got {len(most_sims)} records from '{collection_name}'")
             return  most_sims
@@ -67,5 +68,5 @@ class ChromaDBHandler:
     
     def __getParams(self)->None:
         params = self.config.getConfig()
-        self.embedding_function = OpenAIEmbeddingFunction(api_key=params['OPENAI_API_KEY'], model_name=params["OPENAI_EMBEDDING_MODEL"])
+        self.embedding_function = OpenAIEmbeddingFunction(api_key=params['OPENAI_KEY'], model_name=params["OPENAI_EMBEDDING_MODEL"])
    
