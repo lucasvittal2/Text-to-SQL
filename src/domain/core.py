@@ -63,11 +63,10 @@ class ApplicationCore:
                 self.__getParams()
                 logging.info(f"Trying to generate SQL query, Attempt {attempt} ...")
                 most_sims_tables = self.chroma.getMostSimilars("tables", question, n_results=self.MAX_TABLE_METADATA_RECORDS, to_dict=True)
+                
                 cols_filter = {"$or": [ {"$contains": metadata["table_name"]} for metadata in most_sims_tables ] }
                 most_sims_columns = self.chroma.getMostSimilars("columns", question, n_results=self.MAX_COLUMN_METADATA_RECORDS, filter= cols_filter)
-                most_sims_tables = [json.dumps(metadata) for metadata in most_sims_tables]
                 prompt = self.__buildPrompt(question, most_sims_columns)
-                
                 sql_query = self.text_generation.generateText(prompt)
                 #self.postgres.RunQuery(sql_query)
             
@@ -80,7 +79,7 @@ class ApplicationCore:
                 logging.info("Trying Again...")
                 attempt+=1
 
-        logging.error("SQL query generationg has failed, it was not possible to generate a valid SQL query")
+        logging.error("\n\nSQL query generationg has failed, it was not possible to generate a valid SQL query", exc_info=True)
         raise Exception("SQL query generationg has failed, it was not possible to generate a valid SQL query")
     
     def __getParams(self) -> None:
