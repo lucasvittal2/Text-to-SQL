@@ -13,8 +13,7 @@ services:
     ports:
       - 8000:8000
     networks:
-      devnet:
-        ipv4_address: 172.10.0.10  # Modificado para uma sub-rede mais comum
+      - devnet 
     
   mongodb:
     image: mongo
@@ -24,23 +23,50 @@ services:
       - '27017:27017'
     volumes:
       - ./assets/mongodb/:/data/db
+    networks:
+      - devnet 
+    
   
   text-to-sql:
     build: .
     container_name: text_to_sql_api
     ports:
       - "8090:8090" 
-    restart: always 
+      
+    depends_on:
+      - mongodb
     environment:
-      - PYTHONUNBUFFERED=1
-      - CHROMADB_HOST="localhost"
-      - CHROMADB_PORT="8000"
-      - APP_NAME="TEXT-TO-SQL"
-      - APP_DATABASE="text-to-sql"
-      - MONGO_URI="mongodb://localhost:27017"
-      - MONGO_USERNAME="root"
-      - MONGO_PASSWORD="example"
-      - OPENAI_EMBEDDING_MODEL="text-embedding-3-small"
+      - CHROMADB_HOST=chromadb
+      - CHROMADB_PORT=8000
+      - APP_NAME=TEXT-TO-SQL
+      - APP_DATABASE=text-to-sql
+      - MONGO_HOST=mongodb
+      - MONGO_PORT=27017
+      - CONNECTION_PATH=./assets/connections/connections.yaml
+    volumes:
+      - ./src/:/app/src/
+    networks:
+      - devnet 
+  
+  postgresdb:
+    image: postgres
+    container_name: postgresdb
+    shm_size: 128mb
+    environment:
+
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+
+    networks:
+      - devnet
+
+  adminer:
+    image: adminer
+    ports:
+      - 8080:8080
+    networks:
+      - devnet
 
 networks:
   devnet:
