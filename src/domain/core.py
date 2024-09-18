@@ -1,10 +1,10 @@
+from src.services.llm.embeding import EmbeddingGenerator
+from src.services.llm.generation import TextGenerator
+from src.services.config.config import Config
+from src.client.dbclient import DBClient
+from src.database.postgres import PostgredDBHandler
+from src.database.chroma import ChromaDBHandler, ChromaCollectionData
 from typing import List
-from services.llm.embeding import EmbeddingGenerator
-from services.llm.generation import TextGenerator
-from services.config.config import Config
-from client.dbclient import DBClient
-from database.postgres import PostgredDBHandler
-from database.chroma import ChromaDBHandler, ChromaCollectionData
 import logging
 import json
 
@@ -24,14 +24,14 @@ class ApplicationCore:
     def updateEmbeddings(self) -> None:
         
         self.__getParams()
-        columns_metadata = self.__readJsonl("C:/Users/lucas/OneDrive/Documentos/projects/Text-to-SQL/assets/json/columns.jsonl")
-        tables_metadata = self.__readJsonl("C:/Users/lucas/OneDrive/Documentos/projects/Text-to-SQL/assets/json/tables.jsonl")
-        logging.info("Read metadata files.")
+        columns_metadata = self.__readJsonl("./assets/json/columns.jsonl")
+        tables_metadata = self.__readJsonl("./assets/json/tables.jsonl")
+        logging.info("Reading metadata files...")
         logging.info(f"found {len(columns_metadata)} columns metadata records")
         logging.info(f"found {len(tables_metadata)} tables metadata records")
         columns_metadata_records = len(columns_metadata)
         tables_metadata_records = len(tables_metadata)
-
+        
         logging.info("Generating embeddings...")
 
         columns_metadata_embeddings = [self.embedding_generator.getEmbedding(doc) for doc in columns_metadata ]

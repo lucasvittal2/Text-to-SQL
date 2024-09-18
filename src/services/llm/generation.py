@@ -1,5 +1,5 @@
+from src.services.config.config import Config
 from openai import OpenAI
-from services.config.config import Config
 import logging
 
 class TextGenerator:

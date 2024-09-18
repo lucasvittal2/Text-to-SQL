@@ -1,8 +1,7 @@
+from src.services.config.config import Config
 from typing import List
 from openai import OpenAI
-from services.config.config import Config
 import logging
-import os
 
 
 class EmbeddingGenerator:

@@ -1,11 +1,12 @@
-import chromadb
-from services.config.config import Config
+from src.services.config.config import Config
 from chromadb.utils.embedding_functions import OpenAIEmbeddingFunction
 from dataclasses import dataclass
 from typing import List
-import os
+import chromadb
 import logging
 import json
+import os
+
 
 
 @dataclass

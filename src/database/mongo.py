@@ -1,16 +1,18 @@
-from typing import List
 from pymongo import MongoClient
 from pymongo.errors import CollectionInvalid
-import os
+from typing import List
 import logging
+import os
 
 class MongoDBHandler:
     
     def __init__(self):
         
-        uri = os.getenv("MONGO_URI")
+        MONGO_HOST = os.getenv("MONGO_HOST")
+        MONGO_PORT = int(os.getenv("MONGO_PORT"))
         database_name = os.getenv("APP_DATABASE")
-        self.client = MongoClient(uri)
+        
+        self.client = MongoClient(host=MONGO_HOST, port=MONGO_PORT)
         self.database = self.client[database_name]
 
     def createCollection(self, collection_name: str):

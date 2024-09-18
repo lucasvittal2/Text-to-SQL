@@ -1,4 +1,4 @@
-from database.mongo import MongoDBHandler
+from src.database.mongo import MongoDBHandler
 
 
 class Config:

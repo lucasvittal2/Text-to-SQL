@@ -1,7 +1,7 @@
-import psycopg2
+from src.domain.model import PostgresConnection
 import pandas as pd
+import psycopg2
 import logging
-from domain.model import PostgresConnection
 
 
 class PostgredDBHandler:

@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from pydantic import BaseModel
 
 
 
@@ -10,3 +11,7 @@ class PostgresConnection:
     user: str
     password: str
     port: str
+
+class SQLGenBodyRequest(BaseModel):
+    question: str
+    
