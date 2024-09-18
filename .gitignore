@@ -7,3 +7,4 @@ assets/chromadb/
 assets/logs/
 src/test.py
 assets/connections/connections.yaml
+*test*
