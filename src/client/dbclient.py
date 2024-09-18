@@ -1,13 +1,13 @@
-from domain.model import PostgresConnection
-from services.config.config import Config
+from src.domain.model import PostgresConnection
+import os
 import yaml
 
 class DBClient:
 
     
     def getConnection(self, key: str) -> PostgresConnection:
-        params = Config().getConfig()
-        CONNECTION_PATH = params["CONNECTION_PATH"]
+        
+        CONNECTION_PATH = os.getenv("CONNECTION_PATH")
         with open(CONNECTION_PATH, 'r') as file:
             data = yaml.safe_load(file)[key]
         
