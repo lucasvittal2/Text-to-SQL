@@ -77,7 +77,7 @@ Follow these steps 📝 to clone, set up, and run the Text-to-SQL API
 
    you can consume the API through [http://localhost:8090/](http://localhost:8090/docs#)
 
-   through end points:
+   ### Endpoints
 
    [POST] - /text-to-sql/generateSQL
      body:
